@@ -32,7 +32,7 @@ from mrcnn import utils
 #  Visualization
 ############################################################
 
-def display_images(images, titles=None, cols=4, cmap=None, norm=None,
+def display_images(path, images, titles=None, cols=4, cmap=None, norm=None,
                    interpolation=None):
     """Display the given set of images, optionally with titles.
     images: list or array of image tensors in HWC format.
@@ -80,7 +80,7 @@ def apply_mask(image, mask, color, alpha=0.5):
     return image
 
 
-def display_instances(image, boxes, masks, class_ids, class_names,
+def display_instances(path, name, image, boxes, masks, class_ids, class_names,
                       scores=None, title="",
                       figsize=(16, 16), ax=None,
                       show_mask=True, show_bbox=True,
@@ -109,16 +109,18 @@ def display_instances(image, boxes, masks, class_ids, class_names,
     if not ax:
         _, ax = plt.subplots(1, figsize=figsize)
         auto_show = True
+    auto_show = False
 
     # Generate random colors
     colors = colors or random_colors(N)
 
     # Show area outside image boundaries.
-    height, width = image.shape[:2]
-    ax.set_ylim(height + 10, -10)
-    ax.set_xlim(-10, width + 10)
+    print (image.shape)
+    #height, width = image.shape[:2]
+    #ax.set_ylim(height + 10, -10)
+    #ax.set_xlim(-10, width + 10)
     ax.axis('off')
-    ax.set_title(title)
+    #ax.set_title(title)
 
     masked_image = image.astype(np.uint32).copy()
     for i in range(N):
@@ -162,9 +164,17 @@ def display_instances(image, boxes, masks, class_ids, class_names,
             verts = np.fliplr(verts) - 1
             p = Polygon(verts, facecolor="none", edgecolor=color)
             ax.add_patch(p)
+            ax = plt.axes([0,0,1,1], frameon=False)
+            ax.get_xaxis().set_visible(False)
+            ax.get_yaxis().set_visible(False)
+    
+    plt.autoscale(tight=True)
     ax.imshow(masked_image.astype(np.uint8))
-    if auto_show:
-        plt.show()
+    #if auto_show:
+        #plt.show()
+    plt.box(on=None) 
+    print (path  + name)
+    plt.savefig(path + "/" + name)
 
 
 def display_differences(image,
